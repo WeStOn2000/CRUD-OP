@@ -16,7 +16,8 @@ function asyncHandler(cb){
 
 /* GET articles listing. */
 router.get('/', asyncHandler(async (req, res) => {
-  res.render("articles/index", { articles: {}, title: "Sequelize-It!" });
+  const articles = await Article.findAll({ order: [["createdAt","DESC"]]});
+  res.render("articles/index", { articles, title: "Sequelize-It!" });
 }));
 
 /* Create a new article form. */
@@ -27,7 +28,6 @@ router.get('/new', (req, res) => {
 /* POST create article. */
 router.post('/', asyncHandler(async (req, res) => {
   const article = await Article.create(req.body);
-  
   res.redirect("/articles/"+ article.id);
 }));
 
@@ -38,7 +38,8 @@ router.get("/:id/edit", asyncHandler(async(req, res) => {
 
 /* GET individual article. */
 router.get("/:id", asyncHandler(async (req, res) => {
-  res.render("articles/show", { article: {}, title: "Article Title" }); 
+  const article = await Article.findByPk(req.params.id);
+  res.render("articles/show", { article, title: article.Title }); 
 }));
 
 /* Update an article. */
